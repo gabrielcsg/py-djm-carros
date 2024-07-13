@@ -1,5 +1,5 @@
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from cars.models import Car
 from cars.forms import CarModelForm
 
@@ -22,7 +22,7 @@ def new_car_view(request: HttpRequest) -> HttpResponse:
         new_car_form = CarModelForm(request.POST, request.FILES)
         if (new_car_form.is_valid()):
             new_car_form.save()
-            return HttpResponseRedirect('/cars/')
+            return redirect('cars_list')
     else:
         new_car_form = CarModelForm()
 
