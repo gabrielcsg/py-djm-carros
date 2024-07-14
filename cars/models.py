@@ -22,3 +22,15 @@ class Car(models.Model):
 
     def __str__(self) -> str:
         return self.model
+
+
+class CarInventory(models.Model):
+    cars_count = models.IntegerField()
+    cars_value = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']  # descending order (-)
+
+    def __str__(self) -> str:
+        return f'{self.cars_count} - {self.cars_value}'
