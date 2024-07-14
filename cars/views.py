@@ -1,29 +1,24 @@
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.db.models.query import QuerySet
+from django.views.generic import ListView, CreateView
 from cars.models import Car
 from cars.forms import CarModelForm
 
 
-def cars_view(request: HttpRequest) -> HttpResponse:
-    cars = Car.objects.all().order_by('model')
-    search = request.GET.get('search')
-    if search:
-        cars = cars.filter(model__icontains=search)
+class CarsListView(ListView):
+    model = Car
+    template_name = 'cars.html'
+    context_object_name = 'cars'
 
-    return render(
-        request,
-        'cars.html',
-        {'cars': cars}
-    )
+    def get_queryset(self) -> QuerySet[Car]:
+        queryset = super().get_queryset().order_by('model')
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(model__icontains=search)
+        return queryset
 
 
-def new_car_view(request: HttpRequest) -> HttpResponse:
-    if request.method == 'POST':
-        new_car_form = CarModelForm(request.POST, request.FILES)
-        if (new_car_form.is_valid()):
-            new_car_form.save()
-            return redirect('cars_list')
-    else:
-        new_car_form = CarModelForm()
-
-    return render(request, 'new_car.html', {'new_car_form': new_car_form})
+class NewCarCreateView(CreateView):
+    model = Car
+    form_class = CarModelForm
+    template_name = 'new_car.html'
+    success_url = '/cars/'
