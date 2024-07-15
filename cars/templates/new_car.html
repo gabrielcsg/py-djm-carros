@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Novo Carro{% endblock %}
+{% block title %}Cadastro Carro{% endblock %}
 
 {% block content %}
 <style>
@@ -23,12 +23,58 @@
   input[type="submit"]:hover {
     background-color: #108eb8;
   }
+
+  .loader {
+    display: block;
+    --height-of-loader: 5px;
+    --loader-color: #108eb8;
+    width: 130px;
+    height: var(--height-of-loader);
+    border-radius: 30px;
+    background-color: rgba(0, 0, 0, 0.2);
+    position: relative;
+  }
+
+  .loader::before {
+    content: "";
+    position: absolute;
+    background: var(--loader-color);
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    border-radius: 30px;
+    animation: moving 1s ease-in-out infinite;
+    ;
+  }
+
+  @keyframes moving {
+    50% {
+      width: 100%;
+    }
+
+    100% {
+      width: 0;
+      right: 0;
+      left: unset;
+    }
+  }
 </style>
-<form method="POST" enctype="multipart/form-data">
+<form id="newCarForm" method="POST" enctype="multipart/form-data">
   {% csrf_token %}
 
   <table>{{ form.as_table }}</table>
 
-  <input type="submit" value="Cadastrar" class="btn btn-primary" />
+  <input id="submitButton" type="submit" value="Cadastrar" class="btn btn-primary" />
+  <span id="loading" class="loader" style="display: none;"></span>
 </form>
+
+<script>
+  $(document).ready(function () {
+    $('#newCarForm').on('submit', function () {
+      $('#submitButton').attr('disabled', true).hide();
+      $('#loading').show();
+    });
+  });
+</script>
 {% endblock %}
