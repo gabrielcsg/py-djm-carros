@@ -12,6 +12,9 @@ def car_inventory_update():
         total_value=Sum("value")
     )["total_value"]
 
+    if not cars_value:
+        cars_value = 0
+
     CarInventory.objects.create(cars_count=cars_count, cars_value=cars_value)
 
 
